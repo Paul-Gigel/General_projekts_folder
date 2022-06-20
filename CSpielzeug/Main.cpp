@@ -8,7 +8,8 @@ int main()
     Spielzeug ref2 = ref1;
     Spielzeug ref3 = ref2;
     Spielzeug ref4[15];
-
+    Spielzeug Hans("Fussball",football);
+    Spielzeug Dennis("ABC-Würfel",basketball);
     ref1.printAll();
     ref2.set_string("lol");
     ref2.printAll();
