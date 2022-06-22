@@ -1,6 +1,7 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <vector>
 #include <stdexcept>
 #include <cstdlib>
 
@@ -35,8 +36,8 @@ private:
         }
     }
     void cleanup()  {
+        vkDestroyInstance(instance, nullptr);
         glfwDestroyWindow(window);
-
         glfwTerminate();
     }
 
@@ -65,6 +66,20 @@ private:
         if(vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS) {
             throw std::runtime_error("failed to create instance");
         };
+
+        uint32_t extensionCount = 0;
+        vkEnumerateInstanceExtensionProperties(nullptr,&extensionCount, nullptr);
+        std::vector<VkExtensionProperties> extensions(extensionCount);
+        vkEnumerateInstanceExtensionProperties(nullptr,&extensionCount, extensions.data());
+        std::cout <<"available extensions:\n";
+
+        auto array = glfwGetRequiredInstanceExtensions(&extensionCount);
+        for (uint32_t count = 0; count<= extensionCount;count++)   {
+            std::cout <<*(array+count)<<std::endl;
+        }
+        for (const auto &extension : extensions)    {
+            std::cout <<'\t' << extension.extensionName<<std::endl;
+        }
     }
 };
 int main()  {
@@ -75,5 +90,6 @@ int main()  {
         std::cerr <<e.what()<<std::endl;
         return EXIT_FAILURE;
     }
+    std::cout <<"es funktioniert\n";
     return EXIT_SUCCESS;
 }
