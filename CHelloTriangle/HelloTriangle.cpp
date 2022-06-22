@@ -32,9 +32,9 @@ bool checkValidationLayerSupport()  {
                 layerFound = true;
                 break;
             }
-            if(!layerFound) {
-                return false;
-            }
+        }
+        if(!layerFound) {
+            return false;
         }
     }
     return true;
@@ -110,7 +110,7 @@ private:
         std::cout <<"available extensions:\n";
 
         auto array = glfwGetRequiredInstanceExtensions(&extensionCount);
-        for (uint32_t count = 0; count<= extensionCount;count++)   {
+        for (uint32_t count = 0; count<= 1;count++)   {
             std::cout <<*(array+count)<<std::endl;
         }
         for (const auto &extension : extensions)    {
