@@ -1,16 +1,19 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+#include <vulkan/vk_layer.h>
 #include <iostream>
 #include <vector>
 #include <stdexcept>
 #include <cstdlib>
+#include <cstring>
 
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
 
 const std::vector<const char*> validationLayers = {
-        "VK_LAYER_KHRONOS_validation"
+        "VK_LAYER_KHRONOS_validation"//VK_LAYER_LUNARG_standard_validation
 };
+//#define NDEBUG
 #ifdef NDEBUG
     const bool enableValidationLayers = false;
 #else
@@ -26,6 +29,7 @@ bool checkValidationLayerSupport()  {
 
         for(const auto& layerProperties : availableLayers)  {
             if(strcmp(layerName, layerProperties.layerName)== 0)    {
+                layerFound = true;
                 break;
             }
             if(!layerFound) {
@@ -33,6 +37,7 @@ bool checkValidationLayerSupport()  {
             }
         }
     }
+    return true;
 }
 
 class HelloTriangleApplication  {
@@ -69,6 +74,10 @@ private:
     }
 
     void createInstance()   {
+        if (enableValidationLayers && !checkValidationLayerSupport())   {
+            std::cout <<enableValidationLayers <<std::endl;
+            throw std::runtime_error("validation layer requested, but not available");
+        }
         VkApplicationInfo appInfo{};
         appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
         appInfo.pApplicationName = "Hello Triangle";
