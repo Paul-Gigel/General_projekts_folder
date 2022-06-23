@@ -61,6 +61,12 @@ VkResult CreateDebugUtilsMessangerEXT(VkInstance instance, const VkDebugUtilsMes
         return VK_ERROR_EXTENSION_NOT_PRESENT;
     }
 }
+void DestroyDebugUtilsMessangerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator)    {
+    auto funk =(PFN_vkDestroyDebugUtilsMessengerEXT) vkGetInstanceProcAddr(instance, "PFN_vkDestroyDebugUtilsMessengerEXT");
+    if (funk != nullptr)    {
+        funk(instance, debugMessenger, pAllocator);
+    }
+}
 
 class HelloTriangleApplication  {
 public:
@@ -104,6 +110,9 @@ private:
         }
     }
     void cleanup()  {
+        if (enableValidationLayers) {
+            DestroyDebugUtilsMessangerEXT(instance, debugMessenger, nullptr);
+        }
         vkDestroyInstance(instance, nullptr);
         glfwDestroyWindow(window);
         glfwTerminate();
