@@ -53,6 +53,15 @@ std::vector<const char*> getRequiredExtensions()    {
     return extensions;
 }
 
+VkResult CreateDebugUtilsMessangerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessanger)   {
+    auto funk =(PFN_vkCreateDebugUtilsMessengerEXT) vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
+    if (funk != nullptr)    {
+        return funk(instance, pCreateInfo, pAllocator, pDebugMessanger);
+    }    else   {
+        return VK_ERROR_EXTENSION_NOT_PRESENT;
+    }
+}
+
 class HelloTriangleApplication  {
 public:
     void run()  {
@@ -64,7 +73,7 @@ public:
 private:
     GLFWwindow* window;
     VkInstance instance;
-    VkDebugUtilsMessengerEXT debugUtilsMessenger;
+    VkDebugUtilsMessengerEXT debugMessenger;
     void initWindow()   {
         glfwInit();
 
@@ -75,6 +84,7 @@ private:
     }
     void initVulkan()   {
         createInstance();
+        setupDebugMessanger();
     }
     void setupDebugMessanger()  {
         if (!enableValidationLayers) return;
@@ -84,6 +94,9 @@ private:
         createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
         createInfo.pfnUserCallback = debugCallback;
         createInfo.pUserData = nullptr;
+        if (CreateDebugUtilsMessangerEXT(instance, &createInfo, nullptr, &debugMessenger) != VK_SUCCESS)   {
+            throw std::runtime_error("failed to set up debug messenger");
+        }
     }
     void mainLoop() {
         while (!glfwWindowShouldClose(window))  {
@@ -116,17 +129,16 @@ private:
 
         uint32_t glfwExtensionCount = 0;
         const char** glfwExtensions;
-
+/*--------------------------------------------------------------------------------------------------------------------*/
         glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-
         createInfo.enabledExtensionCount = glfwExtensionCount;
         createInfo.ppEnabledExtensionNames = glfwExtensions;
         createInfo.enabledLayerCount = 0;
-
+/*????????????????????????????????????????????????????????????????????????????????????????????????????????????????????*/
         auto extension = getRequiredExtensions();
         createInfo.enabledExtensionCount = static_cast<uint32_t>(extension.size());
         createInfo.ppEnabledExtensionNames = extension.data();
-
+/*--------------------------------------------------------------------------------------------------------------------*/
         if(vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS) {
             throw std::runtime_error("failed to create instance");
         }
