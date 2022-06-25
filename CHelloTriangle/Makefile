@@ -4,11 +4,14 @@ LDFLAGS	= -lglfw -lvulkan -ldl -lX11 -lXxf86vm -lXrandr -lXi
 VulkanTest:
 	g++ $(CFLAGS) -o HelloTriangle HelloTriangle.cpp $(LDFLAGS)
 
-.PHONY: test clean
+.PHONY: test clean loop
 
-test:  VulkanTest
+test: clean VulkanTest
 	./HelloTriangle
 
+deadloop:
+	./HelloTriangle &
+	make loop
 clean:
 	rm -f HelloTriangle
 
