@@ -11,7 +11,7 @@ test: clean VulkanTest
 
 deadloop:
 	./HelloTriangle &
-	make loop
+	make deadloop
 clean:
 	rm -f HelloTriangle
 
