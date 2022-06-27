@@ -64,7 +64,7 @@ void DestroyDebugUtilsMessangerEXT(VkInstance instance, VkDebugUtilsMessengerEXT
     if (funk != nullptr)    {
         funk(instance, debugMessenger, pAllocator);
     } else  {
-        throw std::runtime_error("failed line 64");
+        throw std::runtime_error("DestroyDebugUtilsMessangerEXT");
     }
 }
 /*--------------------------------------------------------------------------------------------------------------------*/
