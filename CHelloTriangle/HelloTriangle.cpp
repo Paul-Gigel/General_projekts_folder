@@ -60,9 +60,11 @@ VkResult CreateDebugUtilsMessangerEXT(VkInstance instance, const VkDebugUtilsMes
     }
 }
 void DestroyDebugUtilsMessangerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator)    {
-    auto funk =(PFN_vkDestroyDebugUtilsMessengerEXT) vkGetInstanceProcAddr(instance, "PFN_vkDestroyDebugUtilsMessengerEXT");
+    auto funk =(PFN_vkDestroyDebugUtilsMessengerEXT) vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
     if (funk != nullptr)    {
         funk(instance, debugMessenger, pAllocator);
+    } else  {
+        throw std::runtime_error("failed line 64");
     }
 }
 /*--------------------------------------------------------------------------------------------------------------------*/
@@ -116,6 +118,7 @@ private:
     void cleanup()  {
         if (enableValidationLayers) {
             DestroyDebugUtilsMessangerEXT(instance, debugMessenger, nullptr);
+            std::cout<<"validlayer destroyd\n";
         }
         vkDestroyInstance(instance, nullptr);
         glfwDestroyWindow(window);
@@ -127,8 +130,7 @@ private:
             std::cout <<enableValidationLayers <<std::endl;
             throw std::runtime_error("validation layer requested, but not available");
         }
-
-        VkApplicationInfo appInfo{};
+      VkApplicationInfo appInfo{};
         appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
         appInfo.pApplicationName = "Hello Triangle";
         appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
@@ -136,12 +138,12 @@ private:
         appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
         appInfo.apiVersion = VK_API_VERSION_1_0;
 
-        VkInstanceCreateInfo createInfo{};
+      VkInstanceCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
         createInfo.pApplicationInfo = &appInfo;
 
-        uint32_t glfwExtensionCount = 0;
-        const char** glfwExtensions;
+      uint32_t glfwExtensionCount = 0;
+      const char** glfwExtensions;
 /*--------------------------------------------------------------------------------------------------------------------*/
         glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
         createInfo.enabledExtensionCount = glfwExtensionCount;
