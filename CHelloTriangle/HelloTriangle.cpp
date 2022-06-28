@@ -94,8 +94,14 @@ private:
     void initVulkan()   {
         createInstance();
         setupDebugMessanger();
+        createSurface();
         pickPhysicalDevice();
         createLogicalDevice();
+    }
+    void createSurface()    {
+        if (glfwCreateWindowSurface(instance, window, nullptr, &surface) != VK_SUCCESS) {
+            throw std::runtime_error("failed to create Window surface");
+        }
     }
     void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo)   {
         createInfo = {};
@@ -129,6 +135,7 @@ private:
             std::cout<<"validlayer destroyd\n";
         }
         vkDestroyDevice(device, nullptr);
+        vkDestroySurfaceKHR(instance, surface, nullptr);
         vkDestroyInstance(instance, nullptr);
         glfwDestroyWindow(window);
         glfwTerminate();
@@ -208,6 +215,7 @@ private:
         std::cerr <<"validation layer: "<< pCallbackData->pMessage <<std::endl;
         return VK_FALSE;
     }
+    VkSurfaceKHR surface;
 
     void pickPhysicalDevice()   {
         uint32_t deviceCount = 0;
