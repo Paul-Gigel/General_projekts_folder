@@ -240,9 +240,6 @@ private:
             throw std::runtime_error("failed to find a suitable GPU!(pickPhysicalDevice)");
         }
     }
-    const std::vector<const char*> deviceExtensions = {
-            VK_KHR_SWAPCHAIN_EXTENSION_NAME
-    };
     bool isDeviceSuitable(VkPhysicalDevice device)  {
         VkPhysicalDeviceProperties deviceProperties;
         vkGetPhysicalDeviceProperties(device, &deviceProperties);
@@ -272,6 +269,9 @@ private:
         bool isComplete()   {
             return graphicsFamily.has_value() && presentFamily.has_value();
         }
+    };
+    const std::vector<const char*> deviceExtensions = {
+            VK_KHR_SWAPCHAIN_EXTENSION_NAME
     };
     QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device)   {
         QueueFamilyIndices indices;
@@ -337,6 +337,22 @@ private:
             throw std::runtime_error("failed to create logical device");
         }
         vkGetDeviceQueue(device, indices.presentFamily.value(), 0, &presentQueue);
+    }
+    struct SwapChainSupportDetails  {
+        VkSurfaceCapabilitiesKHR capabilities;
+        std::vector<VkSurfaceFormatKHR> formats;
+        std::vector<VkPresentModeKHR> presentModes;
+    };
+    SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device)  {
+        SwapChainSupportDetails details;
+        uint32_t formatCount;
+        vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, nullptr);
+
+        if (formatCount != 0)   {
+            details.formats.resize(formatCount);
+            vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, details.formats.data());
+        }
+        return details;
     }
 };
 int main()  {
