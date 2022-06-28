@@ -247,8 +247,13 @@ private:
         vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
 
         QueueFamilyIndices indices = findQueueFamilies(device);
-        bool extensionSupport = checkDeviceExtensionSupport(device);
-        return indices.isComplete() && extensionSupport;
+        bool extensionsSupported = checkDeviceExtensionSupport(device);
+        bool swapChainAdequate = false;
+        if (extensionsSupported)    {
+            SwapChainSupportDetails swapChainSupport = querySwapChainSupport(device);
+            swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
+        }
+        return indices.isComplete() && extensionsSupported && swapChainAdequate;
     }
     bool checkDeviceExtensionSupport(VkPhysicalDevice device)  {
         uint32_t extensionCount;
