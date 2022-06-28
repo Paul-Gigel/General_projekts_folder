@@ -240,6 +240,9 @@ private:
             throw std::runtime_error("failed to find a suitable GPU!(pickPhysicalDevice)");
         }
     }
+    const std::vector<const char*> deviceExtension = {
+            VK_KHR_SWAPCHAIN_EXTENSION_NAME
+    };
     bool isDeviceSuitable(VkPhysicalDevice device)  {
         VkPhysicalDeviceProperties deviceProperties;
         vkGetPhysicalDeviceProperties(device, &deviceProperties);
@@ -250,8 +253,18 @@ private:
         bool extensionSupport = checkDeviceExtensionSupport(device);
         return indices.isComplete() && extensionSupport;
     }
-    bool checkDeviceExtensionSupport(VkPhysicalDevice device1)  {
-        return true;
+    bool checkDeviceExtensionSupport(VkPhysicalDevice device)  {
+        uint32_t extensionCount;
+        vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
+        std::vector<VkExtensionProperties> availableExtensions(extensionCount);
+        vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
+
+        std::set<std::string> requiredExtensions(deviceExtension.begin(), deviceExtension.end());
+
+        for (const auto& extension : availableExtensions)   {
+            requiredExtensions.erase(extension.extensionName);
+        }
+        return requiredExtensions.empty();
     }
     struct QueueFamilyIndices {
         std::optional<uint32_t> graphicsFamily;
@@ -259,9 +272,6 @@ private:
         bool isComplete()   {
             return graphicsFamily.has_value() && presentFamily.has_value();
         }
-    };
-    const std::vector<const char*> deviceExtension = {
-            VK_KHR_SWAPCHAIN_EXTENSION_NAME
     };
     QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device)   {
         QueueFamilyIndices indices;
