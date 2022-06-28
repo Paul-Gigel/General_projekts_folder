@@ -247,7 +247,11 @@ private:
         vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
 
         QueueFamilyIndices indices = findQueueFamilies(device);
-        return indices.isComplete();
+        bool extensionSupport = checkDeviceExtensionSupport(device);
+        return indices.isComplete() && extensionSupport;
+    }
+    bool checkDeviceExtensionSupport(VkPhysicalDevice device1)  {
+        return true;
     }
     struct QueueFamilyIndices {
         std::optional<uint32_t> graphicsFamily;
@@ -255,6 +259,9 @@ private:
         bool isComplete()   {
             return graphicsFamily.has_value() && presentFamily.has_value();
         }
+    };
+    const std::vector<const char*> deviceExtension = {
+            VK_KHR_SWAPCHAIN_EXTENSION_NAME
     };
     QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device)   {
         QueueFamilyIndices indices;
