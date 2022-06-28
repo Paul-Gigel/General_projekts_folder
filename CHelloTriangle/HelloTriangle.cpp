@@ -240,7 +240,7 @@ private:
             throw std::runtime_error("failed to find a suitable GPU!(pickPhysicalDevice)");
         }
     }
-    const std::vector<const char*> deviceExtension = {
+    const std::vector<const char*> deviceExtensions = {
             VK_KHR_SWAPCHAIN_EXTENSION_NAME
     };
     bool isDeviceSuitable(VkPhysicalDevice device)  {
@@ -259,7 +259,7 @@ private:
         std::vector<VkExtensionProperties> availableExtensions(extensionCount);
         vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
 
-        std::set<std::string> requiredExtensions(deviceExtension.begin(), deviceExtension.end());
+        std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
 
         for (const auto& extension : availableExtensions)   {
             requiredExtensions.erase(extension.extensionName);
@@ -321,9 +321,11 @@ private:
         createInfo.pQueueCreateInfos = queueCreateInfos.data();
 
         createInfo.pEnabledFeatures = &deviceFeatures;
+
+        createInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
+        createInfo.ppEnabledExtensionNames = deviceExtensions.data();//???????????????????????????????????????????????????deviceExtension|s|
 /*--------------------------------------------------------------------------------------------------------------------*/
 //devicevalidationlayer (for backwardskompetabilatx)
-        createInfo.enabledExtensionCount = 0;
         if (enableValidationLayers) {
             createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
             createInfo.ppEnabledLayerNames = validationLayers.data();
