@@ -83,6 +83,7 @@ private:
     VkInstance instance;
     VkDebugUtilsMessengerEXT debugMessenger;
     VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+    VkDevice device;
     void initWindow()   {
         glfwInit();
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -93,6 +94,7 @@ private:
         createInstance();
         setupDebugMessanger();
         pickPhysicalDevice();
+        createLogicalDevice();
     }
     void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo)   {
         createInfo = {};
@@ -114,6 +116,7 @@ private:
             throw std::runtime_error("failed to set up debug messenger");
         }
     }
+
     void mainLoop() {
         while (!glfwWindowShouldClose(window))  {
            glfwPollEvents();
@@ -124,6 +127,7 @@ private:
             DestroyDebugUtilsMessangerEXT(instance, debugMessenger, nullptr);
             std::cout<<"validlayer destroyd\n";
         }
+        vkDestroyDevice(device, nullptr);
         vkDestroyInstance(instance, nullptr);
         glfwDestroyWindow(window);
         glfwTerminate();
@@ -194,6 +198,7 @@ private:
             std::cout <<'\t' << extension.extensionName<<std::endl;
         }
     }
+
     static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
             VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
             VkDebugUtilsMessageTypeFlagsEXT messageType,
@@ -202,6 +207,7 @@ private:
         std::cerr <<"validation layer: "<< pCallbackData->pMessage <<std::endl;
         return VK_FALSE;
     }
+
     void pickPhysicalDevice()   {
         uint32_t deviceCount = 0;
         vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
@@ -255,6 +261,39 @@ private:
             i++;
         }
         return indices;
+    }
+
+    void createLogicalDevice()  {
+        QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
+        VkDeviceQueueCreateInfo queueCreateInfo{};
+        queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+        queueCreateInfo.queueFamilyIndex = indices.graphicsFamily.value();
+        queueCreateInfo.queueCount = 1;
+        float queuePriority = 1.0f;
+        queueCreateInfo.pQueuePriorities = &queuePriority;
+
+        VkPhysicalDeviceFeatures deviceFeatures{};
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!for later
+
+        VkDeviceCreateInfo createInfo{};
+        createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+        createInfo.pQueueCreateInfos = &queueCreateInfo;
+        createInfo.queueCreateInfoCount = 1;
+
+        createInfo.pEnabledFeatures = &deviceFeatures;
+/*--------------------------------------------------------------------------------------------------------------------*/
+//devicevalidationlayer (for backwardskompetabilatx)
+        createInfo.enabledExtensionCount = 0;
+        if (enableValidationLayers) {
+            createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
+            createInfo.ppEnabledLayerNames = validationLayers.data();
+        }   else    {
+            createInfo.enabledLayerCount = 0;
+        }
+/*--------------------------------------------------------------------------------------------------------------------*/
+        if(vkCreateDevice(physicalDevice, &createInfo, nullptr, &device) != VK_SUCCESS) {
+            throw std::runtime_error("failed to create logical device");
+        }
     }
 };
 int main()  {
