@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <vulkan/vk_layer.h>
 #include <iostream>
+#include <fstream>
 #include <set>
 #include <vector>
 #include <optional>
@@ -112,6 +113,7 @@ private:
         createLogicalDevice();
         createSwapChain();
         createImageViews();
+        createGraphicsPipeline();
     }
     void createSurface()    {
         if (glfwCreateWindowSurface(instance, window, nullptr, &surface) != VK_SUCCESS) {
@@ -483,6 +485,26 @@ private:
                 throw std::runtime_error("failed to create ImageViews");
             }
         }
+    }
+
+    void createGraphicsPipeline()   {
+        auto vertShaderCode = readFile("shaders/vert.spv");
+        auto fragShaderCode = readFile("shaders/frag.spv");
+        std::cout<<vertShaderCode.size()<<std::endl;
+        std::cout<<fragShaderCode.size()<<std::endl;
+    }
+    static std::vector<char> readFile(const std::string& filename)  {
+        std::ifstream file(filename, std::ios::ate | std::ios::binary);
+
+        if(!file.is_open()) {
+            throw std::runtime_error("failed to open file");
+        }
+        size_t fileSize = (size_t) file.tellg();
+        std::vector<char> buffer(fileSize);
+        file.seekg(0);
+        file.read(buffer.data(), fileSize);
+        file.close();
+        return buffer;
     }
 };
 int main()  {
