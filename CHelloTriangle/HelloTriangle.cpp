@@ -561,6 +561,9 @@ private:
         multisampling.pSampleMask = nullptr;
         multisampling.alphaToCoverageEnable = VK_FALSE;
         multisampling.alphaToOneEnable = VK_FALSE;
+        //VkPipelineDepthStencilStateCreateInfo stencilState{};
+
+
         /*------------------------------------------------------------------------------------------------------------*/
         vkDestroyShaderModule(device, fragShaderModule, nullptr);
         vkDestroyShaderModule(device, vertShaderModule, nullptr);
