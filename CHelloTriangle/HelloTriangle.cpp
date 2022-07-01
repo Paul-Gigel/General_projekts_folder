@@ -103,6 +103,8 @@ private:
     VkPipelineLayout pipelineLayout;
     VkPipeline graphicsPipeline;
     std::vector<VkFramebuffer> swapChainFramebuffers;
+    VkCommandPool commandPool;
+    VkCommandBuffer commandBuffer;
     void initWindow()   {
         glfwInit();
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -120,6 +122,8 @@ private:
         createRenderPass();
         createGraphicsPipeline();
         createFramebuffers();
+        createCommandPool();
+        createCommandBuffer();
     }
     void createSurface()    {
         if (glfwCreateWindowSurface(instance, window, nullptr, &surface) != VK_SUCCESS) {
@@ -153,6 +157,7 @@ private:
         }
     }
     void cleanup()  {
+        vkDestroyCommandPool(device, commandPool, nullptr);
         vkDestroyPipeline(device, graphicsPipeline, nullptr);
         vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
         for (auto framebuffer : swapChainFramebuffers) {
@@ -716,6 +721,24 @@ private:
                 throw std::runtime_error("failed to create framebuffer");
             }
         }
+    }
+
+    void createCommandPool()    {
+        QueueFamilyIndices queueFamilyIndices = {
+                findQueueFamilies(physicalDevice)
+        };
+        VkCommandPoolCreateInfo poolInfo{};
+        poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+        poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+        poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
+
+        if (vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool) != VK_SUCCESS)    {
+            throw std::runtime_error("failed to create command pool!");
+        }
+    }
+
+    void createCommandBuffer()  {
+
     }
 };
 int main()  {
