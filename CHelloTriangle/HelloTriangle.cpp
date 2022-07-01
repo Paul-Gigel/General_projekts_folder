@@ -809,6 +809,7 @@ private:
     void drawFrame()    {
         vkWaitForFences(device, 1, &inFlightFence, VK_TRUE, UINT64_MAX);
         vkResetFences(device, 1, &inFlightFence);
+        //...
     }
 };
 int main()  {
