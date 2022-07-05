@@ -13,8 +13,8 @@
 #include <cstdlib>
 #include <cstring>
 
-const uint32_t WIDTH = 800;
-const uint32_t HEIGHT = 600;
+const uint32_t WIDTH = 1000;
+const uint32_t HEIGHT = 800;
 
 const int MAX_FRAMES_IN_FLIGHT = 2;
 
@@ -130,27 +130,34 @@ private:
     std::vector<VkFramebuffer> swapChainFramebuffers;
 
     VkRenderPass renderPass;
+
     VkPipelineLayout pipelineLayout;
     VkPipeline graphicsPipeline;
-
     VkCommandPool commandPool;
 
     uint32_t currentFrame;
-    std::vector<VkCommandBuffer> commandBuffers;
 
+    std::vector<VkCommandBuffer> commandBuffers;
     std::vector<VkSemaphore> imageAvailableSemaphores;
+
     std::vector<VkSemaphore> renderFinishedSemaphores;
     std::vector<VkFence> inFlightFences;
+    bool framebufferResized = false;
 
     void initWindow()   {
         glfwInit();
 
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
         window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
-    }
 
+        glfwSetWindowUserPointer(window, this);
+        glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
+    }
+    static void framebufferResizeCallback(GLFWwindow* window, int width, int height)    {
+        auto app = reinterpret_cast<HelloTriangleApplication*>(glfwGetWindowUserPointer(window));
+        app->framebufferResized = true;
+    }
     void initVulkan()   {
         createInstance();
         setupDebugMessanger();
@@ -870,7 +877,6 @@ private:
 
     void drawFrame()    {
         vkWaitForFences(device, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
-        vkResetFences(device, 1, &inFlightFences[currentFrame]); //dont forget to set the Fence to active again, at the End !!!!!!!!!
 
         uint32_t imageIndex;
         VkResult result = vkAcquireNextImageKHR(device, swapchain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
@@ -880,6 +886,9 @@ private:
         } else if (result != VK_SUCCESS) {
             throw std::runtime_error("failed to acquire swap chain image!");
         }
+
+        vkResetFences(device, 1, &inFlightFences[currentFrame]);
+
         vkResetCommandBuffer(commandBuffers[currentFrame], 0);
         recordCommandBuffer(commandBuffers[currentFrame], imageIndex);
 
@@ -908,9 +917,16 @@ private:
         presentInfo.pSwapchains = swapChains;
         presentInfo.pImageIndices = &imageIndex;
         presentInfo.pResults = nullptr;
-        vkQueuePresentKHR(presentQueue, &presentInfo);
 
-
+        result = vkQueuePresentKHR(presentQueue, &presentInfo);
+        if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || framebufferResized != false) {
+            framebufferResized = false;
+            recreateSwapChain();
+            std::cout <<"ouOfDate\n";
+            return;
+        } else if (result != VK_SUCCESS) {
+            throw std::runtime_error("failed to acquire swap chain image!");
+        }
         currentFrame = (currentFrame +1) %MAX_FRAMES_IN_FLIGHT;
     }
 };
