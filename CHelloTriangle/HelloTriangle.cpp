@@ -518,15 +518,22 @@ private:
         swapChainExtent = extent;
     }
     void recreateSwapChain()    {
+        int width = 0, height = 0;
+        glfwGetFramebufferSize(window, &width, &height);
+        while (width == 0 || height == 0)   {
+            glfwGetFramebufferSize(window, &width, &height);
+            glfwWaitEvents();
+        }
         vkDeviceWaitIdle(device);
 
         cleanuoSwapChain();
-
+        vkDeviceWaitIdle(device);
         createSwapChain();
         createImageViews();
         createRenderPass();
         createGraphicsPipeline();
         createFramebuffers();
+
     }
     void cleanuoSwapChain() {
         for (size_t i = 0; i < swapChainFramebuffers.size(); i++) {
@@ -880,12 +887,6 @@ private:
 
         uint32_t imageIndex;
         VkResult result = vkAcquireNextImageKHR(device, swapchain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
-        if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
-            recreateSwapChain();
-            return;
-        } else if (result != VK_SUCCESS) {
-            throw std::runtime_error("failed to acquire swap chain image!");
-        }
 
         vkResetFences(device, 1, &inFlightFences[currentFrame]);
 
@@ -922,8 +923,7 @@ private:
         if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || framebufferResized != false) {
             framebufferResized = false;
             recreateSwapChain();
-            std::cout <<"ouOfDate\n";
-            return;
+            std::cout <<"outOfDate "<<currentFrame<<"\n";
         } else if (result != VK_SUCCESS) {
             throw std::runtime_error("failed to acquire swap chain image!");
         }
