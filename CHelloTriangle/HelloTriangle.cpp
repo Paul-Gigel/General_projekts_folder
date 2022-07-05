@@ -873,7 +873,13 @@ private:
         vkResetFences(device, 1, &inFlightFences[currentFrame]); //dont forget to set the Fence to active again, at the End !!!!!!!!!
 
         uint32_t imageIndex;
-        vkAcquireNextImageKHR(device, swapchain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
+        VkResult result = vkAcquireNextImageKHR(device, swapchain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
+        if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
+            recreateSwapChain();
+            return;
+        } else if (result != VK_SUCCESS) {
+            throw std::runtime_error("failed to acquire swap chain image!");
+        }
         vkResetCommandBuffer(commandBuffers[currentFrame], 0);
         recordCommandBuffer(commandBuffers[currentFrame], imageIndex);
 
@@ -903,6 +909,8 @@ private:
         presentInfo.pImageIndices = &imageIndex;
         presentInfo.pResults = nullptr;
         vkQueuePresentKHR(presentQueue, &presentInfo);
+
+
         currentFrame = (currentFrame +1) %MAX_FRAMES_IN_FLIGHT;
     }
 };
