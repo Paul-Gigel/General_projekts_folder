@@ -1,5 +1,6 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 #include <vulkan/vk_layer.h>
 #include <iostream>
 #include <fstream>
@@ -23,6 +24,16 @@ const std::vector<const char*> validationLayers = {
 };
 const std::vector<const char*> deviceExtensions = {
         VK_KHR_SWAPCHAIN_EXTENSION_NAME
+};
+
+struct Vertex   {
+    glm::vec2 pos;
+    glm::vec3 color;
+};
+const std::vector<Vertex> vertices =    {
+        {{ 0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+        {{ 0.5f,  0.5f}, {0.0f, 1.0f, 0.0f}},
+        {{-0.5f,  0.5f}, {0.0f, 0.0f, 1.0f}}
 };
 //#define NDEBUG
 #ifdef NDEBUG
@@ -928,6 +939,7 @@ private:
             throw std::runtime_error("failed to acquire swap chain image!");
         }
         currentFrame = (currentFrame +1) %MAX_FRAMES_IN_FLIGHT;
+        std::cout <<currentFrame<<"\n";
     }
 };
 int main()  {
