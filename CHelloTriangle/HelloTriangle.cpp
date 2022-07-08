@@ -170,6 +170,7 @@ private:
     uint32_t currentFrame;
 
     std::vector<VkCommandBuffer> commandBuffers;
+    VkBuffer vertexBuffer;
     std::vector<VkSemaphore> imageAvailableSemaphores;
 
     std::vector<VkSemaphore> renderFinishedSemaphores;
@@ -218,6 +219,7 @@ private:
 
     void cleanup()  {
         cleanuoSwapChain();
+        vkDestroyBuffer(device, vertexBuffer, nullptr);
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
             vkDestroySemaphore(device, imageAvailableSemaphores[i], nullptr);
             vkDestroySemaphore(device, renderFinishedSemaphores[i], nullptr);
@@ -854,7 +856,15 @@ private:
     }
 
     void createVertexBuffer()   {
+        VkBufferCreateInfo bufferInfo{};
+        bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+        bufferInfo.size = sizeof(vertices[0]) * vertices.size();
+        bufferInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+        bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
+        if (vkCreateBuffer(device, &bufferInfo, nullptr, &vertexBuffer) != VK_SUCCESS)  {
+            throw std::runtime_error("failed to create vertex buffer!");
+        }
     }
 
     void createCommandBuffers()  {
@@ -971,6 +981,7 @@ private:
         std::cout <<currentFrame<<"\n";
     }
 };
+
 int main()  {
     HelloTriangleApplication app;
     try {
