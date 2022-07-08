@@ -13,6 +13,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>
+#include <array>
 
 const uint32_t WIDTH = 1000;
 const uint32_t HEIGHT = 800;
@@ -29,6 +30,26 @@ const std::vector<const char*> deviceExtensions = {
 struct Vertex   {
     glm::vec2 pos;
     glm::vec3 color;
+    static VkVertexInputBindingDescription getBindingDescription()  {
+        VkVertexInputBindingDescription bindingDescription{};
+        bindingDescription.binding = 0;
+        bindingDescription.stride = sizeof(Vertex);
+        bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
+        return bindingDescription;
+    }
+    static std::array<VkVertexInputAttributeDescription, 2> getAttributeDescription()   {
+        static std::array<VkVertexInputAttributeDescription, 2> attributeDescriptions{};
+        attributeDescriptions[0].binding = 0;
+        attributeDescriptions[0].location = 0;
+        attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+        attributeDescriptions[0].offset = offsetof(Vertex, pos);
+        attributeDescriptions[1].binding = 0;
+        attributeDescriptions[1].location = 1;
+        attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
+        attributeDescriptions[1].offset = offsetof(Vertex, color);
+        return attributeDescriptions;
+    };
 };
 const std::vector<Vertex> vertices =    {
         {{ 0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
@@ -181,6 +202,7 @@ private:
         createGraphicsPipeline();
         createFramebuffers();
         createCommandPool();
+        createVertexBuffer();
         createCommandBuffers();
         createSyncObjects();
     }
@@ -670,11 +692,14 @@ private:
         };
 
         VkPipelineVertexInputStateCreateInfo vertexInputStateInfo{};
+        auto bindingDescription = Vertex::getBindingDescription();
+        auto attributeDescriptions = Vertex::getAttributeDescription();
+
         vertexInputStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-        vertexInputStateInfo.vertexBindingDescriptionCount = 0;
-        vertexInputStateInfo.pVertexBindingDescriptions = nullptr;
-        vertexInputStateInfo.vertexAttributeDescriptionCount = 0;
-        vertexInputStateInfo.pVertexAttributeDescriptions = nullptr;
+        vertexInputStateInfo.vertexBindingDescriptionCount = 1;
+        vertexInputStateInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
+        vertexInputStateInfo.pVertexBindingDescriptions = &bindingDescription;
+        vertexInputStateInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
 
         VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
         inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -826,6 +851,10 @@ private:
         if (vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool) != VK_SUCCESS)    {
             throw std::runtime_error("failed to create command pool!");
         }
+    }
+
+    void createVertexBuffer()   {
+
     }
 
     void createCommandBuffers()  {
