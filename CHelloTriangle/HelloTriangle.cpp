@@ -52,9 +52,9 @@ struct Vertex   {
     };
 };
 const std::vector<Vertex> vertices =    {
-        {{ 0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-        {{ 0.5f,  0.5f}, {0.0f, 1.0f, 0.0f}},
-        {{-0.5f,  0.5f}, {0.0f, 0.0f, 1.0f}}
+        {{ 0.3f, -0.67f}, {0.0f, 0.0f, 0.0f}},
+        {{ 0.59f,  0.356f}, {0.0f, 1.0f, 0.4f}},
+        {{-0.8f,  0.8f}, {0.8f, 0.4f, 0.3f}}
 };
 //#define NDEBUG
 #ifdef NDEBUG
@@ -167,7 +167,7 @@ private:
     VkPipeline graphicsPipeline;
     VkCommandPool commandPool;
 
-    uint32_t currentFrame;
+    uint32_t currentFrame = 0;
 
     std::vector<VkCommandBuffer> commandBuffers;
     VkBuffer vertexBuffer;

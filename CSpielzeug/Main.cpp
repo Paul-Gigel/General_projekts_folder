@@ -10,12 +10,7 @@ int main()
     Spielzeug ref4[15];
     Spielzeug Hans("Fussball",football);
     Spielzeug Dennis("ABC-Würfel",basketball);
-    ref1.printAll();
-    ref2.set_string("lol");
-    ref2.printAll();
-    ref3.set_string("luul");
-    ref3.printAll();
-    ref4[0].printAll();
+    Hans.tauschMich(&Hans);
 
 
     return 0;
