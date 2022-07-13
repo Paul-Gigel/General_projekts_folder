@@ -21,7 +21,7 @@ Spielzeug::~Spielzeug()
     std::cout <<"deleted"<<std::endl;
 }
 
-Spielzeug Spielzeug::operator=(const Spielzeug &s) {
+Spielzeug& Spielzeug::operator=(const Spielzeug &s) {
     gegenstand01 = s.gegenstand01;
     gegenstand02 = new char[strlen(s.gegenstand02) +1];
     strcpy(gegenstand02, s.gegenstand02);
