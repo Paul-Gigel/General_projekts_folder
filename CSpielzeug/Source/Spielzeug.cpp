@@ -20,6 +20,13 @@ Spielzeug::~Spielzeug()
     delete gegenstand02;
     std::cout <<"deleted"<<std::endl;
 }
+
+Spielzeug Spielzeug::operator=(const Spielzeug &s) {
+    gegenstand01 = s.gegenstand01;
+    gegenstand02 = new char[strlen(s.gegenstand02) +1];
+    strcpy(gegenstand02, s.gegenstand02);
+    return *this;
+}
 void Spielzeug::printAll()
 {
     std::cout<<gegenstand01<<std::endl;

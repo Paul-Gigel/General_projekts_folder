@@ -16,6 +16,7 @@ public:
     Spielzeug(std::string g1, const char *g2);
     Spielzeug(const Spielzeug &spielzeug);
     ~Spielzeug();
+    Spielzeug operator = (const Spielzeug &s);
     void printAll();
     void set_string(std::string str);
     void tauschMich(Spielzeug *spielzeug);
