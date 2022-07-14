@@ -211,17 +211,15 @@ private:
     }
 
     void cleanuoSwapChain() {
-        for (size_t i = 0; i < swapChainFramebuffers.size(); i++) {
-            vkDestroyFramebuffer(device, swapChainFramebuffers[i], nullptr);
+        for (auto framebuffer : swapChainFramebuffers) {
+            vkDestroyFramebuffer(device, framebuffer, nullptr);
         }
-        vkDestroyBuffer(device, vertexBuffer, nullptr);
-        vkDestroyPipeline(device, graphicsPipeline, nullptr);
-        vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
-        vkDestroyRenderPass(device, renderPass, nullptr);
-        for (size_t i=0; i < swapCHainImageViews.size(); i++) {
-            vkDestroyImageView(device, swapCHainImageViews[i], nullptr);
+
+        for (auto imageView : swapCHainImageViews) {
+            vkDestroyImageView(device, imageView, nullptr);
         }
         vkDestroySwapchainKHR(device, swapchain, nullptr);
+
     }
 
     void mainLoop() {
@@ -235,6 +233,11 @@ private:
 
     void cleanup()  {
         cleanuoSwapChain();
+
+        vkDestroyPipeline(device, graphicsPipeline, nullptr);
+        vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
+        vkDestroyRenderPass(device, renderPass, nullptr);
+
         vkDestroyBuffer(device, vertexBuffer, nullptr);
         vkFreeMemory(device, vertexBufferMemory, nullptr);
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
