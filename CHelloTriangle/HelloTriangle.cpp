@@ -210,6 +210,15 @@ private:
         createSyncObjects();
     }
 
+    void mainLoop() {
+        while (!glfwWindowShouldClose(window))  {
+            glfwPollEvents();
+            drawFrame();
+        }
+
+        vkDeviceWaitIdle(device);
+    }
+
     void cleanuoSwapChain() {
         for (auto framebuffer : swapChainFramebuffers) {
             vkDestroyFramebuffer(device, framebuffer, nullptr);
@@ -222,15 +231,6 @@ private:
 
     }
 
-    void mainLoop() {
-        while (!glfwWindowShouldClose(window))  {
-            glfwPollEvents();
-            drawFrame();
-        }
-
-        vkDeviceWaitIdle(device);
-    }
-
     void cleanup()  {
         cleanuoSwapChain();
 
@@ -240,11 +240,13 @@ private:
 
         vkDestroyBuffer(device, vertexBuffer, nullptr);
         vkFreeMemory(device, vertexBufferMemory, nullptr);
+
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
             vkDestroySemaphore(device, imageAvailableSemaphores[i], nullptr);
             vkDestroySemaphore(device, renderFinishedSemaphores[i], nullptr);
             vkDestroyFence(device, inFlightFences[i], nullptr);
         }
+
         vkDestroyCommandPool(device, commandPool, nullptr);
 
         vkDestroyDevice(device, nullptr);
@@ -259,6 +261,24 @@ private:
         glfwDestroyWindow(window);
 
         glfwTerminate();
+    }
+
+    void recreateSwapChain()    {
+        int width = 0, height = 0;
+        glfwGetFramebufferSize(window, &width, &height);
+        while (width == 0 || height == 0)   {
+            glfwGetFramebufferSize(window, &width, &height);
+            glfwWaitEvents();
+        }
+
+        vkDeviceWaitIdle(device);
+
+        cleanuoSwapChain();
+
+        createSwapChain();
+        createImageViews();
+        createFramebuffers();
+
     }
 
     void createInstance()   {
@@ -575,24 +595,6 @@ private:
         vkGetSwapchainImagesKHR(device, swapchain, &imageCount, swapChainImages.data());
         swapChainImageFormat = surfaceFormat.format;
         swapChainExtent = extent;
-    }
-    void recreateSwapChain()    {
-        int width = 0, height = 0;
-        glfwGetFramebufferSize(window, &width, &height);
-        while (width == 0 || height == 0)   {
-            glfwGetFramebufferSize(window, &width, &height);
-            glfwWaitEvents();
-        }
-        vkDeviceWaitIdle(device);
-
-        cleanuoSwapChain();
-        vkDeviceWaitIdle(device);
-        createSwapChain();
-        createImageViews();
-        createRenderPass();
-        createGraphicsPipeline();
-        createFramebuffers();
-
     }
 
     static std::vector<char> readFile(const std::string& filename)  {
