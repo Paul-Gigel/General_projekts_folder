@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include "Headers/Spielzeug.h"
 int main()
 {
@@ -9,8 +10,10 @@ int main()
     Spielzeug ref3 = ref2;
     Spielzeug ref4[15];
     Spielzeug Hans("Fussball",football);
-    Spielzeug Dennis("ABC-Würfel",basketball);
+    Spielzeug Dennis("Tennisball",basketball);
     Hans.tauschMich(&Hans);
+    Hans.printAll();
+    Dennis.printAll();
 
 
     return 0;

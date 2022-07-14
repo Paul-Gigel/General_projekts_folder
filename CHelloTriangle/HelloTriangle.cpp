@@ -27,6 +27,13 @@ const std::vector<const char*> deviceExtensions = {
         VK_KHR_SWAPCHAIN_EXTENSION_NAME
 };
 
+//#define NDEBUG
+#ifdef NDEBUG
+const bool enableValidationLayers = false;
+#else
+const bool enableValidationLayers = true;
+#endif
+
 struct Vertex   {
     glm::vec2 pos;
     glm::vec3 color;
@@ -56,12 +63,6 @@ const std::vector<Vertex> vertices =    {
         {{ 0.59f,  0.356f}, {0.0f, 1.0f, 0.4f}},
         {{-0.8f,  0.8f}, {0.8f, 0.4f, 0.3f}}
 };
-//#define NDEBUG
-#ifdef NDEBUG
-const bool enableValidationLayers = false;
-#else
-const bool enableValidationLayers = true;
-#endif
 
 VkResult CreateDebugUtilsMessangerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessanger)   {
     auto funk =(PFN_vkCreateDebugUtilsMessengerEXT) vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
@@ -207,6 +208,20 @@ private:
         createVertexBuffer();
         createCommandBuffers();
         createSyncObjects();
+    }
+
+    void cleanuoSwapChain() {
+        for (size_t i = 0; i < swapChainFramebuffers.size(); i++) {
+            vkDestroyFramebuffer(device, swapChainFramebuffers[i], nullptr);
+        }
+        vkDestroyBuffer(device, vertexBuffer, nullptr);
+        vkDestroyPipeline(device, graphicsPipeline, nullptr);
+        vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
+        vkDestroyRenderPass(device, renderPass, nullptr);
+        for (size_t i=0; i < swapCHainImageViews.size(); i++) {
+            vkDestroyImageView(device, swapCHainImageViews[i], nullptr);
+        }
+        vkDestroySwapchainKHR(device, swapchain, nullptr);
     }
 
     void mainLoop() {
@@ -571,19 +586,6 @@ private:
         createGraphicsPipeline();
         createFramebuffers();
 
-    }
-    void cleanuoSwapChain() {
-        for (size_t i = 0; i < swapChainFramebuffers.size(); i++) {
-            vkDestroyFramebuffer(device, swapChainFramebuffers[i], nullptr);
-        }
-        vkDestroyBuffer(device, vertexBuffer, nullptr);
-        vkDestroyPipeline(device, graphicsPipeline, nullptr);
-        vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
-        vkDestroyRenderPass(device, renderPass, nullptr);
-        for (size_t i=0; i < swapCHainImageViews.size(); i++) {
-            vkDestroyImageView(device, swapCHainImageViews[i], nullptr);
-        }
-        vkDestroySwapchainKHR(device, swapchain, nullptr);
     }
 
     static std::vector<char> readFile(const std::string& filename)  {

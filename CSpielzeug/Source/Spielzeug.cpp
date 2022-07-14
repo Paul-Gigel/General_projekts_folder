@@ -1,5 +1,6 @@
 #include "../Headers/Spielzeug.h"
 #include <cstring>
+std::string Spielzeug::gegenstand03 = "ABC-Würfel";
 Spielzeug::Spielzeug():gegenstand01("0")
 {
     gegenstand02 = new char[5];
@@ -18,7 +19,6 @@ Spielzeug::Spielzeug(const Spielzeug &spielzeug)
 Spielzeug::~Spielzeug()
 {
     delete gegenstand02;
-    std::cout <<"deleted"<<std::endl;
 }
 
 Spielzeug& Spielzeug::operator=(const Spielzeug &s) {
@@ -31,6 +31,7 @@ void Spielzeug::printAll()
 {
     std::cout<<gegenstand01<<std::endl;
     std::cout<<gegenstand02<<std::endl;
+    std::cout<<gegenstand03<<std::endl;
 };
 void Spielzeug::set_string(std::string str)
 {
