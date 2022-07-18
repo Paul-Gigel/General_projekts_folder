@@ -59,9 +59,13 @@ struct Vertex   {
     };
 };
 const std::vector<Vertex> vertices =    {
-        {{ 0.3f, -0.67f}, {0.0f, 0.0f, 0.0f}},
-        {{ 0.59f,  0.356f}, {0.0f, 1.0f, 0.4f}},
-        {{-0.8f,  0.8f}, {0.8f, 0.4f, 0.3f}}
+        {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+        {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+        {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+        {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
+};
+const std::vector<uint16_t> indicis =   {
+        0, 1, 2, 2, 3, 0
 };
 
 VkResult CreateDebugUtilsMessangerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessanger)   {
@@ -173,6 +177,9 @@ private:
     std::vector<VkCommandBuffer> commandBuffers;
     VkBuffer vertexBuffer;
     VkDeviceMemory vertexBufferMemory;
+    VkBuffer indexBuffer;
+    VkDeviceMemory indexBufferMemory;
+
     std::vector<VkSemaphore> imageAvailableSemaphores;
 
     std::vector<VkSemaphore> renderFinishedSemaphores;
@@ -206,6 +213,7 @@ private:
         createFramebuffers();
         createCommandPool();
         createVertexBuffer();
+        createIndexBuffer();
         createCommandBuffers();
         createSyncObjects();
     }
@@ -240,6 +248,9 @@ private:
 
         vkDestroyBuffer(device, vertexBuffer, nullptr);
         vkFreeMemory(device, vertexBufferMemory, nullptr);
+
+        vkDestroyBuffer(device, indexBuffer, nullptr);
+        vkFreeMemory(device, indexBufferMemory, nullptr);
 
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
             vkDestroySemaphore(device, imageAvailableSemaphores[i], nullptr);
@@ -782,6 +793,30 @@ private:
         vkFreeMemory(device, stagingBufferMemory, nullptr);
     }
 
+    void createIndexBuffer()    {
+        VkDeviceSize bufferSize = sizeof(indicis[0]) * indicis.size();
+
+        VkBuffer stagingBuffer;
+        VkDeviceMemory stagingBufferMemory;
+        createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                     VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+                     VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer,
+                     stagingBufferMemory);
+
+        void *data;
+        vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
+        memcpy(data, indicis.data(), (size_t) bufferSize);
+        vkUnmapMemory(device, stagingBufferMemory);
+
+        createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT |VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
+                     VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer, indexBufferMemory);
+
+        copyBuffer(stagingBuffer, indexBuffer, bufferSize);
+
+        vkDestroyBuffer(device, stagingBuffer, nullptr);
+        vkFreeMemory(device, stagingBufferMemory, nullptr);
+    }
+
     uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)   {
         VkPhysicalDeviceMemoryProperties memProperties;
         vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
@@ -830,27 +865,28 @@ private:
         renderPassInfo.pClearValues = &clearColor;
 
         vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-        vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+            vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 
-        VkViewport viewport{};
-        viewport.x = 0.0f;
-        viewport.y = 0.0f;
-        viewport.width = (float) swapChainExtent.width;
-        viewport.height = (float) swapChainExtent.height;
-        viewport.minDepth = 0.0f;
-        viewport.maxDepth = 1.0f;
-        vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
+            VkViewport viewport{};
+            viewport.x = 0.0f;
+            viewport.y = 0.0f;
+            viewport.width = (float) swapChainExtent.width;
+            viewport.height = (float) swapChainExtent.height;
+            viewport.minDepth = 0.0f;
+            viewport.maxDepth = 1.0f;
+            vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
-        VkRect2D scissor{};
-        scissor.offset = {0, 0};
-        scissor.extent = swapChainExtent;
-        vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+            VkRect2D scissor{};
+            scissor.offset = {0, 0};
+            scissor.extent = swapChainExtent;
+            vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-        VkBuffer vertexBuffers[] = {vertexBuffer};
-        VkDeviceSize offsets[] = {0};
-        vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+            VkBuffer vertexBuffers[] = {vertexBuffer};
+            VkDeviceSize offsets[] = {0};
+            vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+            vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT16);
 
-        vkCmdDraw(commandBuffer, static_cast<uint32_t>(vertices.size()), 1, 0, 0);
+            vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indicis.size()), 1, 0, 0, 0);
 
         vkCmdEndRenderPass(commandBuffer);
 
