@@ -109,11 +109,16 @@ const std::vector<Vertex> vertices = {
         {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
         {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
         {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
-        {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
+        {{-0.5f, 0.5f}, {0.0f, 0.0f, 0.0f}},
+        {{-1.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+        {{-1.0f, -1.0f}, {1.0f, 1.0f, 0.0f}},
+        {{1.0f, 1.0f}, {0.3f, 0.1f, 0.2f}},
+        {{0.7f, 1.0f}, {0.0f, 0.0f, 0.3f}},
+        {{0.9f, 0.0f}, {0.6f, 0.2f, 0.0f}}
 };
 
 const std::vector<uint16_t> indices = {
-        0, 1, 2, 2, 3, 0
+        0, 1, 2, 2, 3, 0, 4, 5, 1, 0,  6, 7, 8, 6, 1
 };
 
 class HelloTriangleApplication {
@@ -976,9 +981,9 @@ private:
         float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
         UniformBufferObject ubo{};
-        ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-        ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-        ubo.proj = glm::perspective(glm::radians(45.0f), swapChainExtent.width / (float) swapChainExtent.height, 0.1f, 10.0f);
+        ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 1.0f));
+        ubo.view = glm::lookAt(glm::vec3(2.0, 2.0, 2.0f), glm::vec3(0.2f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        ubo.proj = glm::perspective(glm::radians(30.0f), swapChainExtent.width / (float) swapChainExtent.height, 0.1f, 10.0f);
         ubo.proj[1][1] *= -1;
 
         void* data;
@@ -986,7 +991,7 @@ private:
         memcpy(data, &ubo, sizeof(ubo));
         vkUnmapMemory(device, uniformBuffersMemory[currentImage]);
     }
-
+    float x = 0.1;
     void drawFrame() {
         vkWaitForFences(device, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 
@@ -995,13 +1000,14 @@ private:
 
         if (result == VK_ERROR_OUT_OF_DATE_KHR) {
             recreateSwapChain();
+            std::cout<<"VK_ERROR_OUT_OF_DATE_KHR\n";
             return;
         } else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
             throw std::runtime_error("failed to acquire swap chain image!");
         }
-
+        x = x+0.001f*2;
         updateUniformBuffer(currentFrame);
-
+        std::cout<< x<<std::endl;
         vkResetFences(device, 1, &inFlightFences[currentFrame]);
 
         vkResetCommandBuffer(commandBuffers[currentFrame], /*VkCommandBufferResetFlagBits*/ 0);
