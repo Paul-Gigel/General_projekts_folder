@@ -973,7 +973,7 @@ private:
             }
         }
     }
-
+    float x = 0.1;
     void updateUniformBuffer(uint32_t currentImage) {
         static auto startTime = std::chrono::high_resolution_clock::now();
 
@@ -991,7 +991,6 @@ private:
         memcpy(data, &ubo, sizeof(ubo));
         vkUnmapMemory(device, uniformBuffersMemory[currentImage]);
     }
-    float x = 0.1;
     void drawFrame() {
         vkWaitForFences(device, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 
@@ -1005,7 +1004,7 @@ private:
         } else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
             throw std::runtime_error("failed to acquire swap chain image!");
         }
-        x = x+0.001f*2;
+        x = (x+0.001f)*1.0001f;
         updateUniformBuffer(currentFrame);
         std::cout<< x<<std::endl;
         vkResetFences(device, 1, &inFlightFences[currentFrame]);
@@ -1083,12 +1082,15 @@ private:
 
     VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes) {
         for (const auto& availablePresentMode : availablePresentModes) {
+            std::cout<<availablePresentMode;
             if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
-                return availablePresentMode;
+                std::cout<<"VK_PRESENT_MODE_MAILBOX_KHR\n aivialable\n\n";
+                //return availablePresentMode;
             }
+            std::cout<<std::endl;
         }
-
-        return VK_PRESENT_MODE_FIFO_KHR;
+        std::cout<<"VK_PRESENT_MODE_IMMEDIATE_KHR\n selected\n\n";
+        return VK_PRESENT_MODE_IMMEDIATE_KHR;
     }
 
     VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities) {
