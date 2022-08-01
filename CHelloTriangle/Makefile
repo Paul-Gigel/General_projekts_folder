@@ -9,7 +9,10 @@ VulkanTest: compileShader
 
 .PHONY: test clean loop
 
-test: clean VulkanTest
+test: clean VulkanTest exe
+	rm -f HelloTriangle ./shaders/*.spv
+
+exe :
 	./HelloTriangle
 
 compileShader:
@@ -19,7 +22,6 @@ deadloop:
 	./HelloTriangle &
 	make deadloop
 clean:
-	rm -f HelloTriangle
-	rm -f ./shaders/*.spv
+	rm -f HelloTriangle ./shaders/*.spv
 
 
