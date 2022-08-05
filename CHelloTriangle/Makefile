@@ -1,8 +1,8 @@
 STB_INCLUDE_PATH = /usr/include/stb/
-
+TINYOBJ_INCLUDE_PATH = /usr/include/tiny_obj_loader
 
 CFLAGS	= -std=c++17 -O2
-LDFLAGS	= -lglfw -lvulkan -ldl -lX11 -lXxf86vm -lXrandr -lXi -I$(STB_INCLUDE_PATH)
+LDFLAGS	= -lglfw -lvulkan -ldl -lX11 -lXxf86vm -lXrandr -lXi -I$(STB_INCLUDE_PATH) -I$(TINYOBJ_INCLUDE_PATH)
 
 VulkanTest: compileShader
 	g++ $(CFLAGS) -o HelloTriangle HelloTriangle.cpp $(LDFLAGS)
