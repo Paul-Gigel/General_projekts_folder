@@ -29,8 +29,8 @@
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
 
-const std::string MODEL_PATH = "models/viking_room.obj";
-const std::string TEXTURE_PATH = "models/viking_room.png";
+const std::string MODEL_PATH = "models/burg.obj";
+const std::string TEXTURE_PATH = "textures/burg.jpg";
 
 const int MAX_FRAMES_IN_FLIGHT = 2;
 
@@ -243,7 +243,7 @@ private:
         while (!glfwWindowShouldClose(window)) {
             glfwPollEvents();
             glfwGetCursorPos(window, &xpos, &ypos);
-            std::cout<<xpos/swapChainExtent.height<<"  "<<ypos/swapChainExtent.width<<"\n";
+            std::cout<<xpos<<"  "<<ypos<<"\n";
             drawFrame();
         }
 
@@ -889,7 +889,7 @@ private:
                 };
                 vertex.texCoord = {
                         attrib.texcoords[2 * index.texcoord_index + 0],
-                        attrib.texcoords[2 * index.texcoord_index + 1]
+                        1.0 - attrib.texcoords[2 * index.texcoord_index + 1]
                 };
                 vertex.color = {1.0f, 1.0f, 1.0f};
 
@@ -897,6 +897,7 @@ private:
                 indices.push_back(indices.size());
             }
         }
+        std::cout<<vertices.size()<<std::endl;
     }
 
     void createVertexBuffer() {
@@ -1325,9 +1326,9 @@ private:
         float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
         UniformBufferObject ubo{};
-        ubo.model = glm::rotate(glm::mat4(1.0f), time*glm::radians(-90.0f), glm::vec3(0.3f, 0.5f, -1.0f));
-        ubo.view = glm::lookAt(glm::vec3(2.0, 2.0, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-        ubo.proj = glm::perspective(glm::radians(40.0f), swapChainExtent.width / (float) swapChainExtent.height, 1.0f, 10.0f);
+        ubo.model = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(xpos, ypos, 0.0f));
+        ubo.view = glm::lookAt(glm::vec3(0.0f, 0.0f, -30.0f), glm::vec3(-10.0f,-10.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        ubo.proj = glm::perspective(glm::radians(63.0f), swapChainExtent.width / (float) swapChainExtent.height, 1.0f, 100.0f);
         ubo.proj[1][1] *= -1;
 
         void* data;
@@ -1348,9 +1349,10 @@ private:
         } else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
             throw std::runtime_error("failed to acquire swap chain image!");
         }
-        x = (x+0.001f)*1.0001f;
+        x += 0.01f;
+        //std::cout<<x<<std::endl;
         updateUniformBuffer(currentFrame);
-        //std::cout<< x<<std::endl;
+        std::cout<< x<<std::endl;
         vkResetFences(device, 1, &inFlightFences[currentFrame]);
 
         vkResetCommandBuffer(commandBuffers[currentFrame], /*VkCommandBufferResetFlagBits*/ 0);
