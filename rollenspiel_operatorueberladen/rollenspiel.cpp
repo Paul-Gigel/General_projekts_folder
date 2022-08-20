@@ -44,5 +44,3 @@ void character::inDenKampf(character &c1) {
 void character::getStatus() const {
     cout<<klasse<<" (hp :"<<hp<<" (mp :"<<mp<<")";
 }
-
-55 F6 B7
