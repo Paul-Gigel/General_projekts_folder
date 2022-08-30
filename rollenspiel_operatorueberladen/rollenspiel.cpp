@@ -18,6 +18,11 @@ int character::operator+(int n) {
 int operator+(int lOperand, character& rOperand)  {
     return lOperand + rOperand.hp;
 }
+bool operator!(const character& c)    {
+    if (c.hp <=0)   return true;
+    //std::cout<<c.hp<<"\n";
+    return false;
+}
 character character::operator+(character &c) {
     character Allianz("Allianz", this->hp+c.hp, this->mp+c.mp);
     cout<< this->klasse<<" und "<< c.klasse<<" haben eine Allianz gegründet\n";

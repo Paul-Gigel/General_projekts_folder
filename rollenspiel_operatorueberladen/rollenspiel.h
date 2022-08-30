@@ -14,6 +14,7 @@ public:
     bool operator<(int);
     character operator+(character&);
     int operator+(int);
+    friend bool operator!(const character&);
     friend int operator+(int, character&);
     character& operator+=(const character&);
     character& operator++();

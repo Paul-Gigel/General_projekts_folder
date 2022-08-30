@@ -9,12 +9,12 @@ int main()  {
     character Allianz = einHeld + guteHexe;
     Character einBoesewicht("bösewicht", 18, 15);
     Allianz.inDenKampf(einBoesewicht);
-    for (character i = 0; i<10; i++) {
-
-    }
+    /*for (character i = 0; i<10; i++) {
+        std::cout<<i;
+    }*/
     einHeld += guteHexe;
-    std::cout<<einHeld+1000<<std::endl;
-    std::cout<<1000+einHeld<<std::endl;
+    std::cout<<!einHeld<<std::endl;
+    std::cout<<!einBoesewicht<<std::endl;
 
     return 0;
 }
