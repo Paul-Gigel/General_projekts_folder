@@ -12,6 +12,9 @@ public:
     character(std::string, int, int);
     character(int, std::string s="standart");
     bool operator<(int);
+    bool operator>(int);
+    bool operator==(const character&);
+    bool operator!=(const character&);
     character operator+(character&);
     int operator+(int);
     friend bool operator!(const character&);
@@ -21,6 +24,7 @@ public:
     character& operator--();
     character operator++(int);
     character operator--(int);
+    friend std::ostream& operator<<(std::ostream&, character&);
     void heilen();
     void inDenKampf(character&);
     void getStatus() const;

@@ -12,16 +12,23 @@ Character::character(int n, std::string s): klasse(s), mp(n) {};
 bool character::operator<(int n) {
     return mp<n;
 }
+bool character::operator>(int n) {
+    return mp>n;
+}
 int character::operator+(int n) {
     return hp + n;
 }
 int operator+(int lOperand, character& rOperand)  {
     return lOperand + rOperand.hp;
 }
+bool character::operator==(const character& c) {
+    return ((c.klasse == this->klasse)&&(c.hp == this->hp)&&(c.mp == this->mp));
+};
+bool character::operator!=(const character& c) {
+    return ((c.klasse != this->klasse)||(c.hp != this->hp)||(c.mp != this->mp));
+};
 bool operator!(const character& c)    {
-    if (c.hp <=0)   return true;
-    //std::cout<<c.hp<<"\n";
-    return false;
+    return (c.hp <=0);
 }
 character character::operator+(character &c) {
     character Allianz("Allianz", this->hp+c.hp, this->mp+c.mp);
@@ -52,6 +59,10 @@ character character::operator--(int) {
     if (tmp.mp >0) tmp.mp--;
     return tmp;
 };
+std::ostream& operator<<(std::ostream& os, character& c)  {
+    os<<c.klasse<<'/'<<c.hp<<'/'<<c.mp;
+    return os;
+}
 void character::heilen() {
     hp+=10;
 }
@@ -60,7 +71,7 @@ void character::inDenKampf(character &c1) {
         this->getStatus();
         cout<<"greift an!\n";
         c1.hp -= this->mp;
-        if (c1.hp <=0)  {
+        if (!c1)  {
             cout <<c1.klasse<<" hat verloren!\n";
             break;
         }
@@ -68,7 +79,7 @@ void character::inDenKampf(character &c1) {
         c1.getStatus();
         cout<<"greift an!\n";
         this->hp -= c1.mp;
-        if (this->hp <=0)   {
+        if (!this)   {
             cout<< this->klasse <<"hat verloren!\n";
             break;
         }
