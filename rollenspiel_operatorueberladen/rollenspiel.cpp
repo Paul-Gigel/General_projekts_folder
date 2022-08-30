@@ -3,10 +3,20 @@
 using namespace std;
 #include "rollenspiel.h"
 
-character::character(string s, int h, int m) : klasse(s), hp(h), mp(m) {
+Character::character(string s, int h, int m) : klasse(s), hp(h), mp(m) {
     cout<<"ein Neuer Held wurde geboren. Status : ";
     getStatus();
     cout<<endl;
+}
+Character::character(int n, std::string s): klasse(s), mp(n) {};
+bool character::operator<(int n) {
+    return mp<n;
+}
+int character::operator+(int n) {
+    return hp + n;
+}
+int operator+(int lOperand, character& rOperand)  {
+    return lOperand + rOperand.hp;
 }
 character character::operator+(character &c) {
     character Allianz("Allianz", this->hp+c.hp, this->mp+c.mp);
@@ -19,6 +29,24 @@ character& character::operator+=(const character &c) {
     cout<< this->klasse <<" erhält die HP und MP con "<<c.klasse<<"\n";
     return *this;
 }
+character& character::operator++() {
+    mp++;
+    return *this;
+}
+character& character::operator--() {
+    if (mp >0) mp--;
+    return *this;
+}
+character character::operator++(int) {
+    character tmp = *this;
+    tmp.mp++;
+    return tmp;
+};
+character character::operator--(int) {
+    character tmp = *this;
+    if (tmp.mp >0) tmp.mp--;
+    return tmp;
+};
 void character::heilen() {
     hp+=10;
 }

@@ -3,14 +3,18 @@
 
 using namespace std;
 
-typedef character Character;
 int main()  {
     character einHeld("held", 20, 5);
     character guteHexe("guteHexe", 10, 11);
-    //character Allianz = einHeld + guteHexe;
+    character Allianz = einHeld + guteHexe;
     Character einBoesewicht("bösewicht", 18, 15);
-    //Allianz.inDenKampf(einBoesewicht);
+    Allianz.inDenKampf(einBoesewicht);
+    for (character i = 0; i<10; i++) {
+
+    }
     einHeld += guteHexe;
-    einHeld.inDenKampf(einBoesewicht);
+    std::cout<<einHeld+1000<<std::endl;
+    std::cout<<1000+einHeld<<std::endl;
+
     return 0;
 }

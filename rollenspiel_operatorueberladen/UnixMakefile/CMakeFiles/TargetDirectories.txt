@@ -1,0 +1,3 @@
+/home/paul/CLionProjects/General_projekts_folder/rollenspiel_operatorueberladen/UnixMakefile/CMakeFiles/rollenspielgame.dir
+/home/paul/CLionProjects/General_projekts_folder/rollenspiel_operatorueberladen/UnixMakefile/CMakeFiles/edit_cache.dir
+/home/paul/CLionProjects/General_projekts_folder/rollenspiel_operatorueberladen/UnixMakefile/CMakeFiles/rebuild_cache.dir
