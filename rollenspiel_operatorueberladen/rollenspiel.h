@@ -10,7 +10,7 @@ private:
     int mp;
 public:
     character(std::string, int, int);
-    character(int, std::string s="standart");
+    character(int, std::string s="standart", int hp = 30);
     bool operator<(int);
     bool operator>(int);
     bool operator==(const character&);
@@ -24,7 +24,9 @@ public:
     character& operator--();
     character operator++(int);
     character operator--(int);
-    friend std::ostream& operator<<(std::ostream&, character&);
+    explicit operator int() const;
+    friend std::ostream& operator<<(std::ostream&, const character&);
+    friend std::istream& operator>>(std::istream&, character&);
     void heilen();
     void inDenKampf(character&);
     void getStatus() const;

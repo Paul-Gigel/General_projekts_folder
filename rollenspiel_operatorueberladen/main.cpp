@@ -9,14 +9,14 @@ int main()  {
     character Allianz = einHeld + guteHexe;
     Character einBoesewicht("bösewicht", 18, 15);
     einHeld.inDenKampf(einBoesewicht);
-    /*for (character i = 0; i<10; i++) {
+    for (character i = 100; i>0; i--) {
         std::cout<<i;
-    }*/
+    }
     einHeld += guteHexe;
     std::cout<<(einHeld==einHeld)<<std::endl;
-    std::cout<<(guteHexe==einBoesewicht)<<std::endl;
-    int ival =2, fval = 9999999;
-    fval>>ival;
-    std::cout<<fval<<"\n";
+    int ival{einHeld};
+    character* ref = new character(15);
+    std::cout<<einHeld<<std::endl;
+    std::cin>>einBoesewicht;
     return 0;
 }

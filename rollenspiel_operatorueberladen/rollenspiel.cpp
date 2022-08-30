@@ -8,7 +8,7 @@ Character::character(string s, int h, int m) : klasse(s), hp(h), mp(m) {
     getStatus();
     cout<<endl;
 }
-Character::character(int n, std::string s): klasse(s), mp(n) {};
+Character::character(int n, std::string s, int hp): klasse(s), mp(n), hp(hp) {};
 bool character::operator<(int n) {
     return mp<n;
 }
@@ -51,17 +51,27 @@ character& character::operator--() {
 }
 character character::operator++(int) {
     character tmp = *this;
-    tmp.mp++;
+    ++this->mp;
     return tmp;
 };
 character character::operator--(int) {
     character tmp = *this;
-    if (tmp.mp >0) tmp.mp--;
+    if (tmp.mp >0) --this->mp;
     return tmp;
 };
-std::ostream& operator<<(std::ostream& os, character& c)  {
+character::operator int() const {
+    return hp;
+}
+std::ostream& operator<<(std::ostream& os, const character& c)  {
     os<<c.klasse<<'/'<<c.hp<<'/'<<c.mp;
     return os;
+}
+std::istream& operator>>(std::istream& is, character& c)  {
+    std::cout<<"Hp      : "; is>>c.hp;
+    std::cout<<"Mp      : "; is>>c.mp;
+    std::cout<<"klasse  : "; is>>c.klasse;
+
+    return is;
 }
 void character::heilen() {
     hp+=10;
