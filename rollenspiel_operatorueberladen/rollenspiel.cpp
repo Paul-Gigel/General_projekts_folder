@@ -73,6 +73,20 @@ std::istream& operator>>(std::istream& is, character& c)  {
 
     return is;
 }
+std::ostream& operator<<(std::ostream& os, const character* c)  {
+    os<<c->klasse<<'/'<<c->hp<<'/'<<c->mp;
+    return os;
+}
+std::istream& operator>>(std::istream& is, character* c)  {
+    std::cout<<"Hp      : "; is>>c->hp;
+    std::cout<<"Mp      : "; is>>c->mp;
+    std::cout<<"klasse  : "; is>>c->klasse;
+
+    return is;
+}
+int character::operator()(const character& c)  {
+    return mp-c.mp;
+}
 void character::heilen() {
     hp+=10;
 }

@@ -16,7 +16,7 @@ int main()  {
     std::cout<<(einHeld==einHeld)<<std::endl;
     int ival{einHeld};
     character* ref = new character(15);
-    std::cout<<einHeld<<std::endl;
+    std::cout<<guteHexe(einHeld)<<std::endl;
     std::cin>>einBoesewicht;
     return 0;
 }
