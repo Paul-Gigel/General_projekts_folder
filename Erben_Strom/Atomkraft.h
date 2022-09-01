@@ -24,8 +24,8 @@ public:
     }
     void calc(float& ct, unsigned int& Co2) const{
         unsigned int KWh = getKWh();
-        ct = Ct4KWh*KWh;
-        Co2 = Co2KWh*KWh;
+        ct = getCt4KWh()*KWh;
+        Co2 = getCo2KWh()*KWh;
         //Ct4KWh =0; ->thats what "const" saves me from
     }
     void print() const  {

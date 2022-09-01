@@ -6,8 +6,8 @@ int main()  {
     meilerl.setQuelle("Atomkraft");
     meilerl.setKWh(1000);
     meilerl.setCo2KWh(16);
-    meilerl.setCt4KWh(2.64f);
-    meilerl.print();
+    meilerl.setCt4KWh(2.65f);
+    meilerl.Strom::print();
     return 0;
 }
 /*
