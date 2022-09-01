@@ -3,7 +3,7 @@
 #ifndef ERBEN_STROM_STROM_H
 #define ERBEN_STROM_STROM_H
 class Strom {
-protected:
+private:
     std::string quelle;
     unsigned int KWh;
 public:

@@ -7,7 +7,7 @@ int main()  {
     meilerl.setKWh(1000);
     meilerl.setCo2KWh(16);
     meilerl.setCt4KWh(2.64f);
-    meilerl.xprint();
+    meilerl.print();
     return 0;
 }
 /*

@@ -22,16 +22,21 @@ public:
     void setCt4KWh(float ct)    {
         Ct4KWh = ct;
     }
+    void calc(float& ct, unsigned int& Co2) const{
+        unsigned int KWh = getKWh();
+        ct = Ct4KWh*KWh;
+        Co2 = Co2KWh*KWh;
+        //Ct4KWh =0; ->thats what "const" saves me from
+    }
     void print() const  {
         std::cout<<"Co2 pro KWh : "<<getCo2KWh()<<std::endl;
         std::cout<<"Cent pro KWh : "<<getCt4KWh()<<std::endl;
         Strom::print();
-    }
-    void xprint() const  {
-        std::cout<<"Co2 pro KWh : "<<Co2KWh<<std::endl;
-        std::cout<<"Cent pro KWh : "<<Ct4KWh<<std::endl;
-        std::cout<<"Cent pro KWh : "<<quelle<<std::endl;
-        std::cout<<"Cent pro KWh : "<<KWh<<std::endl;
+        float ct;
+        unsigned int Co2;
+        calc(ct, Co2);
+        std::cout<<"Co2 gesamt : "<<Co2<<std::endl;
+        std::cout<<"Cent gesamt : "<<ct<<std::endl;
     }
 };
 #endif //ERBEN_STROM_ATOMKRAFT_H
