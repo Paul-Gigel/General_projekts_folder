@@ -1,14 +1,14 @@
 #include <iostream>
 #include <string>
 #include "Strom.h"
-#ifndef ERBEN_STROM_ATOMKRAFT_H
-#define ERBEN_STROM_ATOMKRAFT_H
-class Atomkraft : virtual public Strom  {
+#ifndef ERBEN_STROM_WINDKRAFT_H
+#define ERBEN_STROM_WINDKRAFT_H
+class Windkraft : virtual public Strom  {
 private:
     unsigned int Co2KWh;
     float Ct4KWh;
 public:
-    Atomkraft(unsigned int co2 =0, float ct =0.0f,
+    Windkraft(unsigned int co2 =0, float ct =0.0,
               std::string q ="", unsigned int k =0) :Strom(q, k), Co2KWh(co2), Ct4KWh(ct) {};
     unsigned int getCo2KWh() const  {
         return Co2KWh;

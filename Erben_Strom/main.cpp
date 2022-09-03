@@ -1,13 +1,17 @@
 #include <iostream>
 #include "Atomkraft.h"
+#include "Windkraft.h"
+#include "Stromanbieter.h"
 
 int main()  {
-    Atomkraft meilerl;
-    meilerl.setQuelle("Atomkraft");
-    meilerl.setKWh(1000);
-    meilerl.setCo2KWh(16);
-    meilerl.setCt4KWh(2.65f);
-    meilerl.Strom::print();
+    Stromanbieter anbieter01;;
+    anbieter01.Atomkraft::setCo2KWh(22);
+    anbieter01.Atomkraft::setCt4KWh(2.65f);
+    anbieter01.Windkraft::setCo2KWh(10);
+    anbieter01.Windkraft::setCt4KWh(2.5f);
+    anbieter01.setQuelle("Atomkraft und Windkraft");
+    anbieter01.setKWh(12000);
+    anbieter01.print();
     return 0;
 }
 /*
