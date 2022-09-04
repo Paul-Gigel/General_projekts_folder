@@ -8,11 +8,11 @@ private:
     std::string song;
 public:
     MP3_Format(const std::string& s) : song(s)  {};
-    void abspielen()    {
+    void abspielen() override {
         std::cout<<song<<"  wird gerade gespielt\n";
-    }
-    void info() {
+    };
+    void info() override {
         std::cout<<"Der Song ist eine MP3-Datei\n";
-    }
+    };
 };
 #endif
