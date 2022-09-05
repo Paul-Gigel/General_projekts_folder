@@ -1,53 +1,37 @@
 #include <iostream>
 #ifndef REIHE_REIHE_H
 #define REIHE_REIHE_H
-template<typename T>
-struct Data {
-    T data;
-    T* nextdata;
-    T& operator=(const T d)   {
 
-    }
-};
 template<typename T, size_t Max =5>
 class Reihe {
 private:
-    Data<T>* data;
-    Data<T>* startData;
-    Data<T>* helpData;
+    size_t size =Max;
+    T date[Max];
 public:
-    Reihe() : startData(nullptr), helpData(nullptr) {
-        *data = new Data<T>;
-        //data->data = d;
-        startData = data;
-        startData->nextdata = nullptr;
-        for (size_t i =0;i<=Max;i++)    {
-            helpData = startData;
-            while (helpData->nextdata != nullptr)   {
-                helpData = helpData->nextdata;
-            }
-            helpData->nextdata = data;
-            data->nextdata = nullptr;
-        }
-    }
-    //T& operator[](size_t);
-    //void setDaten(const T&);
-    //T getDaten();
+    void setDaten(const T&);
+    T& getDaten();
+    Reihe<T, 1> operator[](const T&);
 };
-/*template<typename T, size_t Max>
-T &Reihe<T>::operator[](size_t size) {
-    return ;
+
+template<typename T, size_t Max>
+T& Reihe<T, Max>::getDaten() {
+    return date[size];
+}
+template<typename T, size_t Max>
+void Reihe<T, Max>::setDaten(const T &ival) {
+
+}
+template<typename T, size_t Max>
+Reihe<T, 1> Reihe<T, Max>::operator[](const T &i) {
+    if (i>Max||i<0) {
+        std::cerr<<"out of Bound\n";
+        exit(1);
+    }
+    Reihe<T, 1> tmp;
+    tmp.date[0] = this->date[i];
+    return tmp;
 }
 
-template<typename T>
-T Reihe<T>::getDaten() {
-    return data;
-}
-template<typename T>
-void Reihe<T>::setDaten(const T &ival) {
-    data = ival;
-}
-*/
 typedef Reihe<int> Reihe_int;
 typedef Reihe<double> Reihe_double;
 #endif
