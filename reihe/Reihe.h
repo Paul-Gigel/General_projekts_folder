@@ -15,11 +15,11 @@ public:
 
 template<typename T, size_t Max>
 T& Reihe<T, Max>::getDaten() {
-    return date[size];
+    return date[0];
 }
 template<typename T, size_t Max>
 void Reihe<T, Max>::setDaten(const T &ival) {
-
+    date[0] = ival;
 }
 template<typename T, size_t Max>
 Reihe<T, 1> Reihe<T, Max>::operator[](const T &i) {
