@@ -1,14 +1,17 @@
-#include "Reihe.h"
+//
+// Created by paul on 09.09.22.
+//
 
-template<typename T>
-T Reihe<T>::getDaten() {
-    return data;
+#include "Reihe.h"
+template<typename T, int max>
+Reihe<T, max>::Reihe() {
+    daten = max;
 }
-template<typename T>
-void Reihe<T>::setDaten(const T &ival) {
-    data = ival;
+template<typename T, int max>
+T &Reihe<T, max>::getDaten() const {
+    return daten;
 }
-template<>
-void Reihe<int>::setDaten(const int& ival) {
-    data = ival;
+template<typename T, int max>
+void Reihe<T, max>::setDaten(const T & in) {
+    daten =in;
 }
